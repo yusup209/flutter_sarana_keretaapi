@@ -16,7 +16,7 @@ class ProfileScreen extends StatelessWidget {
 
     return  Scaffold(
         appBar:  AppBar(
-          title:  Text(detailsUser.userName),
+          title:  Text('Sarana Kereta Api'),
           automaticallyImplyLeading: false,
           actions: <Widget>[
             IconButton(
@@ -49,11 +49,6 @@ class ProfileScreen extends StatelessWidget {
             SizedBox(height:10.0),
             Text(
               "Email : " + detailsUser.userEmail,
-              style:  TextStyle(fontWeight: FontWeight.bold, color: Colors.black,fontSize: 20.0),
-            ),
-            SizedBox(height:10.0),
-            Text(
-              "Provider : " + detailsUser.providerDetails,
               style:  TextStyle(fontWeight: FontWeight.bold, color: Colors.black,fontSize: 20.0),
             ),
           ],
