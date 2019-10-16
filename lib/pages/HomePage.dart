@@ -1,21 +1,58 @@
 import 'package:flutter/material.dart';
+import '../main.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
-class HomePage extends StatelessWidget {
+
+
+class ProfileScreen extends StatelessWidget {
+  final UserDetails detailsUser;
+
+  ProfileScreen({Key key, @required this.detailsUser}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: null,
+    final GoogleSignIn _gSignIn =  GoogleSignIn();
+
+    return  Scaffold(
+        appBar:  AppBar(
+          title:  Text('Sarana Kereta Api'),
+          automaticallyImplyLeading: false,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                FontAwesomeIcons.signOutAlt,
+                size: 20.0,
+                color: Colors.white,
+              ),
+              onPressed: (){
+                _gSignIn.signOut();
+                print('Signed out');
+                Navigator.pop(context);
+
+              },
+            ),
+          ],
         ),
-        title: Text("Beranda"),
-      ),
-      body: Container(
-        child: Center(
-          child: Text("Selamat datang di aplikasi Sarana Perkretaapian!"),
-        ),
-      ),
+        body:Center(child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            CircleAvatar(
+              backgroundImage:NetworkImage(detailsUser.photoUrl),
+              radius: 50.0,
+            ),
+            SizedBox(height:10.0),
+            Text(
+              "Name : " + detailsUser.userName,
+              style:  TextStyle(fontWeight: FontWeight.bold, color: Colors.black,fontSize: 20.0),
+            ),
+            SizedBox(height:10.0),
+            Text(
+              "Email : " + detailsUser.userEmail,
+              style:  TextStyle(fontWeight: FontWeight.bold, color: Colors.black,fontSize: 20.0),
+            ),
+          ],
+        ),)
     );
   }
 }
