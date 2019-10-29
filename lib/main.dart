@@ -98,10 +98,10 @@ class _LoginSaranaState extends State<LoginSarana>
                   child: Column(
                     children: <Widget>[
                       SizedBox(
-                        height: 70.0,
+                        height: 20.0,
                       ),
                       AvatarGlow(
-                        endRadius: 180,
+                        endRadius: 200,
                         duration: Duration(seconds: 2),
                         glowColor: Colors.white24,
                         repeat: true,
