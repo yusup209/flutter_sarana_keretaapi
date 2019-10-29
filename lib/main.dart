@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:avatar_glow/avatar_glow.dart';
+// import 'package:flutter/services.dart';
+import 'delayed_animation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'pages/HomePage.dart';
@@ -26,26 +30,42 @@ class LoginSarana extends StatefulWidget {
   _LoginSaranaState createState() => _LoginSaranaState();
 }
 
-class _LoginSaranaState extends State<LoginSarana> {
-
+class _LoginSaranaState extends State<LoginSarana>
+    with SingleTickerProviderStateMixin {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googlSignIn = new GoogleSignIn();
+  final int delayedAmount = 500;
+  AnimationController _controller;
+  @override
+  void initState() {
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(
+        milliseconds: 200,
+      ),
+      lowerBound: 0.0,
+      upperBound: 0.1,
+    )..addListener(() {
+        setState(() {});
+      });
+    super.initState();
+  }
 
   Future<FirebaseUser> _signIn(BuildContext context) async {
-
-    Scaffold.of(context).showSnackBar(new SnackBar(
-      content: new Text('Sign in'),
-    ));
+    final snackBar = new SnackBar(content: Text('Sign In'));
+    Scaffold.of(context).showSnackBar(snackBar);
 
     final GoogleSignInAccount googleUser = await _googlSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth =await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
 
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
 
-    FirebaseUser userDetails = await _firebaseAuth.signInWithCredential(credential);
+    FirebaseUser userDetails =
+        await _firebaseAuth.signInWithCredential(credential);
     ProviderDetails providerInfo = new ProviderDetails(userDetails.providerId);
 
     List<ProviderDetails> providerData = new List<ProviderDetails>();
@@ -67,84 +87,167 @@ class _LoginSaranaState extends State<LoginSarana> {
     return userDetails;
   }
 
-
   @override
   Widget build(BuildContext context) {
+    final color = Colors.white;
+    const padding = 15.0;
     return Scaffold(
-      body: Builder(
-        builder: (context) => Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height:  MediaQuery.of(context).size.height,
-              child: Image.network(
-                  'https://images.unsplash.com/photo-1518050947974-4be8c7469f0c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60'
-                  ,fit: BoxFit.fill,
-                  color: Color.fromRGBO(255, 255, 255, 0.6),
-                  colorBlendMode: BlendMode.modulate
-              ),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(height:10.0),
-                Container(
-                    width: 250.0,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(30.0)),
-                        color: Color(0xffffffff),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Icon(FontAwesomeIcons.google,color: Color(0xffCE107C),),
-                            SizedBox(width:10.0),
-                            Text(
-                              'Sign in with Google',
-                              style: TextStyle(color: Colors.black,fontSize: 18.0),
-                            ),
-                          ],),
-                        onPressed: () => _signIn(context)
-                            .then((FirebaseUser user) => print(user))
-                            .catchError((e) => print(e)),
+        backgroundColor: Color(0xFF0F3443),
+        body: Builder(
+            builder: (context) => Center(
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 70.0,
                       ),
-                    )
-                ),
+                      AvatarGlow(
+                        endRadius: 180,
+                        duration: Duration(seconds: 2),
+                        glowColor: Colors.white24,
+                        repeat: true,
+                        repeatPauseDuration: Duration(seconds: 2),
+                        startDelay: Duration(seconds: 1),
+                        child: Padding(
+                            padding: EdgeInsets.all(0.0),
+                            child: CircleAvatar(
+                              backgroundImage:
+                                  AssetImage('assets/cybertrain.png'),
+                              backgroundColor: Colors.transparent,
+                              radius: 3000.0,
+                            )),
+                      ),
+                      SizedBox(
+                        height: 100.0,
+                      ),
+                      DelayedAimation(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            SizedBox(
+                              width: 100.0,
+                            ),
+                            Container(
+                                width: 250.0,
+                                padding:
+                                    EdgeInsets.only(right: 30.0, left: 30.0),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: RaisedButton(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            new BorderRadius.circular(10.0)),
+                                    color: Color(0xffffffff),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Icon(
+                                          FontAwesomeIcons.google,
+                                          color: Color(0xffCE107C),
+                                        ),
+                                        SizedBox(
+                                          width: 10.0,
+                                          height: 50.0,
+                                        ),
+                                        Text(
+                                          'Masuk dengan Google',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 20.0),
+                                        ),
+                                      ],
+                                    ),
+                                    onPressed: () => _signIn(context)
+                                        .then(
+                                            (FirebaseUser user) => print(user))
+                                        .catchError((e) => print(e)),
+                                  ),
+                                )),
+                            SizedBox(
+                              height: 20.0,
+                              width: 10.0,
+                            ),
+                            Container(
+                                width: 250.0,
+                                padding:
+                                    EdgeInsets.only(right: 30.0, left: 30.0),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: RaisedButton(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            new BorderRadius.circular(10.0)),
+                                    color: Colors.blueAccent,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Icon(
+                                          FontAwesomeIcons.facebook,
+                                          color: Colors.white,
+                                        ),
+                                        SizedBox(
+                                          width: 10.0,
+                                          height: 50.0,
+                                        ),
+                                        Text(
+                                          'Masuk dengan Facebook',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20.0),
+                                        ),
+                                      ],
+                                    ),
+                                    onPressed: () {}
+                                  ),
+                                )),
+                            SizedBox(
+                              height: 40.0,
+                            ),
+                          ],
+                        ),
+                      ),
+                      DelayedAimation(
+                        child: Text(
+                          "Butuh Bantuan?",
+                          style: TextStyle(fontSize: 15.0, color: Colors.white),
+                        ),
+                        delay: delayedAmount + 5000,
+                      ),
+                    ],
+                  ),
+                )
+            //  Column(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: <Widget>[
+            //     Text('Tap on the Below Button',style: TextStyle(color: Colors.grey[400],fontSize: 20.0),),
+            //     SizedBox(
+            //       height: 20.0,
+            //     ),
+            //      Center(
 
-                Container(
-                    width: 250.0,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(30.0)),
-                        color: Color(0xffffffff),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Icon(FontAwesomeIcons.facebookF,color: Color(0xff4754de),),
-                            SizedBox(width:10.0),
-                            Text(
-                              'Sign in with Facebook',
-                              style: TextStyle(color: Colors.black,fontSize: 18.0),
-                            ),
-                          ],),
-                        onPressed: () {},
-                      ),
-                    )
-                ),
-              ],
-            ),
-          ],
-        ),),
-    );
+            //   ),
+            //   ],
+
+            // ),
+            ));
+  }
+
+  void _onTapDown(TapDownDetails details) {
+    _controller.forward();
+  }
+
+  void _onTapUp(TapUpDetails details) {
+    _controller.reverse();
   }
 }
 
-
+class Heading extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(padding: const EdgeInsets.only(top: 12.0, bottom: 12.0));
+  }
+}
 
 class UserDetails {
   final String providerDetails;
@@ -153,9 +256,9 @@ class UserDetails {
   final String userEmail;
   final List<ProviderDetails> providerData;
 
-  UserDetails(this.providerDetails,this.userName, this.photoUrl,this.userEmail, this.providerData);
+  UserDetails(this.providerDetails, this.userName, this.photoUrl,
+      this.userEmail, this.providerData);
 }
-
 
 class ProviderDetails {
   ProviderDetails(this.providerDetails);
