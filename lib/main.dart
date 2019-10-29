@@ -212,7 +212,7 @@ class _LoginSaranaState extends State<LoginSarana>
                           "Butuh Bantuan?",
                           style: TextStyle(fontSize: 15.0, color: Colors.white),
                         ),
-                        delay: delayedAmount + 5000,
+                        delay: delayedAmount + 1000,
                       ),
                     ],
                   ),
