@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'Sarana Kereta Api',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Color(0xff9C58D2),
+        primaryColor: Color(0xFF0F3443),
       ),
       home: LoginSarana(),
     );
@@ -177,7 +177,7 @@ class _LoginSaranaState extends State<LoginSarana>
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             new BorderRadius.circular(10.0)),
-                                    color: Colors.blueAccent,
+                                    color: Color(0xFF2D4486),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
