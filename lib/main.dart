@@ -202,7 +202,7 @@ class _LoginSaranaState extends State<LoginSarana>
                                   ),
                                 )),
                             SizedBox(
-                              height: 40.0,
+                              height: 10.0,
                             ),
                           ],
                         ),
