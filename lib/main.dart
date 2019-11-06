@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:avatar_glow/avatar_glow.dart';
-// import 'package:flutter/services.dart';
 import 'delayed_animation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'pages/HomePage.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as JSON;
 
 void main() => runApp(MyApp());
 
@@ -32,6 +33,44 @@ class LoginSarana extends StatefulWidget {
 
 class _LoginSaranaState extends State<LoginSarana>
     with SingleTickerProviderStateMixin {
+  // Facebook
+  bool _isLoggedIn = false;
+  Map userProfile;
+  final facebookLogin = FacebookLogin();
+
+  _loginWithFB() async {
+    final result = await facebookLogin.logIn(['email']);
+
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+        final token = result.accessToken.token;
+        final graphResponse = await http.get(
+            'https://graph.facebook.com/v2.12/me?fields=name,picture,email&access_token=${token}');
+        final profile = JSON.jsonDecode(graphResponse.body);
+        print(profile);
+        setState(() {
+          userProfile = profile;
+          _isLoggedIn = true;
+        });
+        break;
+
+      case FacebookLoginStatus.cancelledByUser:
+        setState(() => _isLoggedIn = false);
+        break;
+      case FacebookLoginStatus.error:
+        setState(() => _isLoggedIn = false);
+        break;
+    }
+  }
+
+  _logout() {
+    facebookLogin.logOut();
+    setState(() {
+      _isLoggedIn = false;
+    });
+  }
+
+  // Google
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googlSignIn = new GoogleSignIn();
   final int delayedAmount = 500;
@@ -117,7 +156,7 @@ class _LoginSaranaState extends State<LoginSarana>
                             )),
                       ),
                       SizedBox(
-                        height: 100.0,
+                        height: 50.0,
                       ),
                       DelayedAimation(
                         child: Column(
@@ -147,7 +186,7 @@ class _LoginSaranaState extends State<LoginSarana>
                                         ),
                                         SizedBox(
                                           width: 10.0,
-                                          height: 50.0,
+                                          height: 30.0,
                                         ),
                                         Text(
                                           'Masuk dengan Google',
@@ -174,32 +213,33 @@ class _LoginSaranaState extends State<LoginSarana>
                                 child: Align(
                                   alignment: Alignment.center,
                                   child: RaisedButton(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            new BorderRadius.circular(10.0)),
-                                    color: Color(0xFF2D4486),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Icon(
-                                          FontAwesomeIcons.facebook,
-                                          color: Colors.white,
-                                        ),
-                                        SizedBox(
-                                          width: 10.0,
-                                          height: 50.0,
-                                        ),
-                                        Text(
-                                          'Masuk dengan Facebook',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20.0),
-                                        ),
-                                      ],
-                                    ),
-                                    onPressed: () {}
-                                  ),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              new BorderRadius.circular(10.0)),
+                                      color: Color(0xFF2D4486),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          Icon(
+                                            FontAwesomeIcons.facebook,
+                                            color: Colors.white,
+                                          ),
+                                          SizedBox(
+                                            width: 10.0,
+                                            height: 10.0,
+                                          ),
+                                          Text(
+                                            'Masuk dengan Facebook',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20.0),
+                                          ),
+                                        ],
+                                      ),
+                                      onPressed: () {
+                                        _loginWithFB();
+                                      }),
                                 )),
                             SizedBox(
                               height: 10.0,
