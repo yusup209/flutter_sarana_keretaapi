@@ -61,6 +61,9 @@ class _LoginSaranaState extends State<LoginSarana>
         setState(() => _isLoggedIn = false);
         break;
     }
+//    Navigator.push(context,
+//      new MaterialPageRoute(builder: (context)=> HomePage()),
+//    );
   }
 
   _logout() {
@@ -120,7 +123,7 @@ class _LoginSaranaState extends State<LoginSarana>
     Navigator.push(
       context,
       new MaterialPageRoute(
-        builder: (context) => new ProfileScreen(detailsUser: details),
+        builder: (context) => new HomePage(detailsUser: details),
       ),
     );
     return userDetails;

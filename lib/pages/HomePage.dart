@@ -5,10 +5,11 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 
 
-class ProfileScreen extends StatelessWidget {
+
+class HomePage extends StatelessWidget {
   final UserDetails detailsUser;
 
-  ProfileScreen({Key key, @required this.detailsUser}) : super(key: key);
+  HomePage({Key key, @required this.detailsUser}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
