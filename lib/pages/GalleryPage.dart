@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:kf_drawer/kf_drawer.dart';
 
 class GalleryPage extends KFDrawerContent {
@@ -43,5 +44,23 @@ class _GalleryPageState extends State<GalleryPage> {
         ),
       ),
     );
+
+    new StaggeredGridView.countBuilder(
+      crossAxisCount: 4,
+      itemCount: 8,
+      itemBuilder: (BuildContext context,int index)=> new Container(
+        color: Colors.green,
+        child: new Center(
+          child: new CircleAvatar(
+            backgroundColor: Colors.white,
+            child: new Text('Gallery'),
+          ),
+        ),),
+        staggeredTileBuilder: (int index)=>
+        new StaggeredTile.count(2, index.isEven ? 2 : 1),
+        mainAxisSpacing: 4.0,
+        crossAxisSpacing: 4.0,
+    );
   }
 }
+
